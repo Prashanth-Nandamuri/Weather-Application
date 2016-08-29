@@ -11,9 +11,27 @@ myApp.controller('mainController', function($scope, $http) {
     $scope.minTemp = "NA";
     $scope.maxTemp = "NA";
     $scope.weatherHead = "Fetching your location";
-    $scope.getLocation = function(city){
+    $scope.lat = 0;
+    $scope.lng = 0;
+    angular.element(document).ready(function () {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else { 
+            console.log("Geolocation is not supported by this browser.");
+        }
+    });
+    function showPosition(position) {
+        $scope.lat = position.coords.latitude;
+        $scope.lng = position.coords.longitude;
+        console.log("Latitude: " + $scope.lat+ 
+        " Longitude: " + $scope.lng);
+        $scope.getLocation($scope.lat,$scope.lng,'');
+    }
+    $scope.getLocation = function(lat,long,city){
         // console.log(city);
+        if(city)
         var url = "http://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=8e7f53509f9979ea3be81371f0e09c40&units=imperial";
+        else var url = "http://api.openweathermap.org/data/2.5/weather?lat="+$scope.lat+"&lon="+$scope.lng+"&appid=8e7f53509f9979ea3be81371f0e09c40&units=imperial";
         $http.get(url).success (function(data){
             // console.log(data.weather[0].icon);
             var access = data.main;
@@ -25,8 +43,8 @@ myApp.controller('mainController', function($scope, $http) {
             $scope.city = data.name;
             $scope.tempHead = "<img src=\"http://openweathermap.org/img/w/"+data.weather[0].icon+".png\">"+" "+access.temp+" &#8457";
             $scope.hideValue = false;
-            getHourly(city);
-            getDaily(city);
+            getHourly(data.name);
+            getDaily(data.name);
         });    
     }
     function getHourly(city){
