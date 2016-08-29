@@ -43,8 +43,10 @@ myApp.controller('mainController', function($scope, $http) {
             $scope.city = data.name;
             $scope.tempHead = "<img src=\"http://openweathermap.org/img/w/"+data.weather[0].icon+".png\">"+" "+access.temp+" &#8457";
             $scope.hideValue = false;
-            getHourly(data.name);
-            getDaily(data.name);
+            setPreviousSearch($scope.city);
+            getHourly($scope.city);
+            getDaily($scope.city);
+            getPreviousSearch();
         });    
     }
     function getHourly(city){
@@ -72,5 +74,21 @@ myApp.controller('mainController', function($scope, $http) {
                 if(i%3==2) $scope.dailyTable += "</tr>";
             }
         });  
+    }
+    function getPreviousSearch() {
+        $scope.prevSearch = "";
+        var searchItems = JSON.parse(localStorage.getItem('searchHistory'));
+        for(var i=0;i<searchItems.length;i++)
+        $scope.prevSearch +="<button class=\"btn btn-info\" id=\"searchButton\" ng-click=\"getLocation('','',"+searchItems[i].cityName+")\">"+searchItems[i].cityName+"</button>";
+    }
+    function setPreviousSearch(city){
+        var oldItems = JSON.parse(localStorage.getItem('searchHistory')) || [];
+        var newItem = {'cityName': city};
+        var found = 0;
+        for(var i=0;i<oldItems.length;i++){
+            if( oldItems[i].cityName == city) found=1;
+        }
+        if(found === 0) oldItems.push(newItem);
+        localStorage.setItem('searchHistory', JSON.stringify(oldItems));
     }
 });

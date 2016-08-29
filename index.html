@@ -69,6 +69,14 @@
         </div>
       </div>
     </div>
+    <div class="container" id="history" ng-hide="hideValue">
+      <div class="panel panel-info">
+        <div class="panel-heading">Previous Search</div>
+        <div class="panel-body">
+          <div ng-bind-html="prevSearch"></div>
+        </div>
+      </div>
+    </div>
     <div class="container" id="hourly" ng-hide="hideValue">
       <div class="panel panel-info">
         <div class="panel-heading">Hourly weather for {{city}}</div>

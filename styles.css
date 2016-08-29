@@ -12,3 +12,6 @@
 .jumbotron{
 	background-color: #95d6e9; 
 }
+#searchButton{
+	margin: 2px;
+}
